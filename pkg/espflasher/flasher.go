@@ -157,6 +157,22 @@ func New(portName string, opts *FlasherOptions) (*Flasher, error) {
 		return nil, fmt.Errorf("open serial port %s: %w", portName, err)
 	}
 
+	return newPort(portName, port, opts)
+}
+
+// NewPort creates a new Flasher using an existing serial.Port.
+//
+// The opts.BaudRate should match the baud rate given to serial.Open.
+//
+// See New for more details.
+func NewPort(portName string, port serial.Port, opts *FlasherOptions) (*Flasher, error) {
+	if opts == nil {
+		opts = DefaultOptions()
+	}
+	return newPort(portName, port, opts)
+}
+
+func newPort(portName string, port serial.Port, opts *FlasherOptions) (*Flasher, error) {
 	f := &Flasher{
 		port:    port,
 		conn:    newConn(port),
